@@ -24,14 +24,14 @@ jobs:
 
     - name: Ejecutar SQL en PostgreSQL
       run: |
-        ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
-        for sql_file in /home/$USER/sql/*.sql; do
-          filename=$(basename "$sql_file")
-          echo "Copiando $filename al contenedor..."
-          docker cp "$sql_file" postgresql-dev:/tmp/"$filename"
-          echo "Ejecutando $filename..."
+        ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << EOF
+        for sql_file in /home/\$USER/sql/*.sql; do
+          filename=\$(basename "\$sql_file")
+          echo "Copiando \$filename al contenedor..."
+          docker cp "\$sql_file" postgresql-dev:/tmp/"\$filename"
+          echo "Ejecutando \$filename..."
           docker exec postgresql-dev bash -c \
-            "PGPASSWORD=$POSTGRES_PASSWORD psql -U $POSTGRES_USER -d $POSTGRES_DB -f /tmp/$filename"
+            "PGPASSWORD='$POSTGRES_PASSWORD' psql -U '$POSTGRES_USER' -d '$POSTGRES_DB' -f /tmp/\$filename"
         done
         echo "¡Datos cargados exitosamente!"
         EOF
